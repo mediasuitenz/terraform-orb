@@ -71,7 +71,9 @@ fi
 
 if [[ -n "${TF_PARAM_VAR_FILE}" ]]; then
     for file in $(echo "${TF_PARAM_VAR_FILE}" | tr ',' '\n'); do
-        if [[ -f "$module_path/$file" ]]; then
+        if [[ -f "$file" ]]; then
+            PLAN_ARGS="$PLAN_ARGS -var-file=$file"
+        elif [[ -f "$module_path/$file" ]]; then
             PLAN_ARGS="$PLAN_ARGS -var-file=$file"
         else
             echo "Var file '$file' wasn't found" >&2
@@ -81,6 +83,5 @@ if [[ -n "${TF_PARAM_VAR_FILE}" ]]; then
 fi
 
 export PLAN_ARGS
-# terraform -chdir="$module_path" init -input=false -lock-timeout=300s -no-color $INIT_ARGS
 # shellcheck disable=SC2086
 terraform -chdir="$module_path" apply -destroy -input=false -no-color -auto-approve $PLAN_ARGS

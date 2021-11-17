@@ -55,8 +55,10 @@ if [[ -n "${TF_PARAM_VAR}" ]]; then
     done
 fi
 if [[ -n "${TF_PARAM_VAR_FILE}" ]]; then
-for file in $(echo "${TF_PARAM_VAR_FILE}" | tr ',' '\n'); do
-    if [[ -f "$module_path/$file" ]]; then
+    for file in $(echo "${TF_PARAM_VAR_FILE}" | tr ',' '\n'); do
+     if [[ -f "$file" ]]; then
+        PLAN_ARGS="$PLAN_ARGS -var-file=$file"
+    elif [[ -f "$module_path/$file" ]]; then
         PLAN_ARGS="$PLAN_ARGS -var-file=$file"
     else
         echo "var file '$file' wasn't found" >&2
